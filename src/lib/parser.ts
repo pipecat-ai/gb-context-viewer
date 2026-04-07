@@ -57,8 +57,8 @@ function fixNonStandardJson(raw: string): string {
   return result;
 }
 
-const EVENT_RE = /<event\s+name="([^"]+)"([^>]*)>([\s\S]*?)<\/event>/;
-const TASK_ID_RE = /task_id="([^"]*)"/;
+const EVENT_RE = /<event\s+name="?([^\s">]+)"?([^>]*)>([\s\S]*?)<\/event>/;
+const TASK_ID_RE = /task_id="?([^\s">]+)"?/;
 const SUMMARY_RE = /<session_history_summary>([\s\S]*?)<\/session_history_summary>/;
 const SECTOR_RE = /(?:in|around) sector (\d+)/;
 
