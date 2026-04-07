@@ -1,0 +1,354 @@
+/* ── Reset & Base ────────────────────────────────────── */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 14px;
+}
+
+body {
+  font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+  background: #ebebeb;
+  color: #1a1a1a;
+  line-height: 1.5;
+}
+
+/* ── App Shell ───────────────────────────────────────── */
+
+.app {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.app-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.app-header h1 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.header-rule {
+  border: none;
+  border-top: 2px solid #1a1a1a;
+  margin: 8px 0 24px;
+}
+
+.reset-btn {
+  font-family: inherit;
+  font-size: 0.8rem;
+  background: #1a1a1a;
+  color: #ebebeb;
+  border: none;
+  padding: 4px 12px;
+  cursor: pointer;
+}
+
+.reset-btn:hover {
+  background: #333;
+}
+
+.error-banner {
+  background: #d32f2f;
+  color: #fff;
+  padding: 8px 12px;
+  margin-bottom: 16px;
+  font-size: 0.85rem;
+}
+
+/* ── File Input ──────────────────────────────────────── */
+
+.file-input-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.drop-zone {
+  border: 2px dashed #999;
+  padding: 48px 24px;
+  text-align: center;
+  transition: border-color 0.15s;
+}
+
+.drop-zone--active {
+  border-color: #1a1a1a;
+  background: #e0e0e0;
+}
+
+.drop-zone p {
+  margin-bottom: 12px;
+  color: #555;
+}
+
+.file-label {
+  display: inline-block;
+  font-family: inherit;
+  font-size: 0.85rem;
+  background: #1a1a1a;
+  color: #ebebeb;
+  padding: 6px 16px;
+  cursor: pointer;
+}
+
+.file-label:hover {
+  background: #333;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid #bbb;
+  margin: 24px 0;
+}
+
+.paste-label {
+  color: #555;
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+}
+
+.paste-area {
+  width: 100%;
+  font-family: inherit;
+  font-size: 0.8rem;
+  padding: 12px;
+  border: 1px solid #999;
+  background: #f5f5f5;
+  resize: vertical;
+}
+
+.paste-area:focus {
+  outline: 2px solid #1a1a1a;
+  outline-offset: -2px;
+}
+
+.parse-btn {
+  font-family: inherit;
+  font-size: 0.85rem;
+  margin-top: 8px;
+  background: #1a1a1a;
+  color: #ebebeb;
+  border: none;
+  padding: 6px 24px;
+  cursor: pointer;
+}
+
+.parse-btn:disabled {
+  background: #999;
+  cursor: not-allowed;
+}
+
+.parse-btn:not(:disabled):hover {
+  background: #333;
+}
+
+/* ── Viewer ──────────────────────────────────────────── */
+
+.entry-count {
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+/* ── Entry Card ──────────────────────────────────────── */
+
+.entry {
+  border-top: 1px solid #ccc;
+  padding: 0 0 0 12px;
+  border-left: 3px solid transparent;
+}
+
+.entry:last-child {
+  border-bottom: 1px solid #ccc;
+}
+
+/* Role-based left border */
+.entry--system {
+  border-left-color: #888;
+}
+.entry--user-text {
+  border-left-color: #2979ff;
+}
+.entry--user-event {
+  border-left-color: #90a4ae;
+}
+.entry--user-summary {
+  border-left-color: #78909c;
+}
+.entry--assistant {
+  border-left-color: #43a047;
+}
+.entry--assistant-tool-call {
+  border-left-color: #7b1fa2;
+}
+.entry--tool-response {
+  border-left-color: #e65100;
+}
+
+/* ── Entry Header ────────────────────────────────────── */
+
+.entry-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
+  padding: 8px 0;
+}
+
+.entry-header--expandable {
+  cursor: pointer;
+  user-select: none;
+  margin: 0 0 0 -12px;
+  padding: 8px 0 8px 12px;
+}
+
+.entry-header--expandable:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.chevron-inline {
+  font-size: 0.7rem;
+  width: 14px;
+  flex-shrink: 0;
+  color: #666;
+}
+
+.entry-index {
+  color: #999;
+  min-width: 36px;
+}
+
+.role-badge {
+  display: inline-block;
+  padding: 1px 8px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #fff;
+}
+
+.role-badge--system {
+  background: #888;
+}
+.role-badge--user-text {
+  background: #2979ff;
+}
+.role-badge--user-event {
+  background: #78909c;
+}
+.role-badge--user-summary {
+  background: #78909c;
+}
+.role-badge--assistant,
+.role-badge--assistant-tool-call {
+  background: #43a047;
+}
+.role-badge--tool-response {
+  background: #e65100;
+}
+
+.event-badge {
+  display: inline-block;
+  padding: 1px 8px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: #37474f;
+  color: #e0e0e0;
+}
+
+.tool-call-badge {
+  display: inline-block;
+  padding: 1px 8px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: #7b1fa2;
+  color: #fff;
+}
+
+.event-summary {
+  color: #444;
+  font-size: 0.8rem;
+}
+
+.task-id {
+  color: #999;
+  font-size: 0.7rem;
+}
+
+/* ── Entry Body ──────────────────────────────────────── */
+
+.entry-body {
+  margin-top: 0;
+  padding-bottom: 8px;
+}
+
+.entry-content {
+  font-family: inherit;
+  font-size: 0.8rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.45;
+  color: #222;
+  padding: 4px 0;
+}
+
+.tool-call-args {
+  color: #555;
+  font-size: 0.75rem;
+}
+
+/* ── Collapsible (still used for tool call args) ─────── */
+
+.collapsible {
+  margin-top: 4px;
+}
+
+.collapsible-toggle {
+  font-family: inherit;
+  font-size: 0.75rem;
+  background: none;
+  border: none;
+  color: #555;
+  cursor: pointer;
+  padding: 2px 0;
+}
+
+.collapsible-toggle:hover {
+  color: #1a1a1a;
+}
+
+.chevron {
+  display: inline-block;
+  font-size: 0.6rem;
+  width: 12px;
+}
+
+.collapsible-body {
+  margin-top: 0;
+  padding: 0 0 8px 12px;
+  border-left: 1px solid #ccc;
+}
+
+/* ── Responsive ──────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  html {
+    font-size: 13px;
+  }
+
+  .app {
+    padding: 12px 8px;
+  }
+}
