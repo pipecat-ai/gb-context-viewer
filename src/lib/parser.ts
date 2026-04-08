@@ -144,23 +144,116 @@ function classifyEntry(entry: RawEntry, index: number): ClassifiedEntry {
   return { index, role: entry.role, kind: "user-text" as EntryKind, content };
 }
 
-function stripPreamble(raw: string): string {
-  // Strip any non-JSON text before the opening bracket
-  const start = raw.indexOf("[");
-  if (start === -1) return raw;
-  const end = raw.lastIndexOf("]");
-  if (end === -1) return raw;
-  return raw.slice(start, end + 1);
+const SECTION_HEADER_RE = /^[= ]{3,}\n\s*(.+?)\s*\n[= ]{3,}$/;
+
+interface RawSection {
+  title: string | null;
+  json: string;
+}
+
+function extractSections(raw: string): RawSection[] {
+  const sections: RawSection[] = [];
+  let remaining = raw;
+
+  while (remaining.length > 0) {
+    const arrayStart = remaining.indexOf("[");
+    if (arrayStart === -1) break;
+
+    // Look for a section header in the text before this array
+    const preamble = remaining.slice(0, arrayStart);
+    const headerMatch = preamble.match(SECTION_HEADER_RE);
+    const title = headerMatch ? headerMatch[1].trim() : null;
+
+    // Find the matching closing bracket by parsing through the fixed content
+    // We need to find the end of this JSON array, accounting for raw newlines
+    const fixed = fixNonStandardJson(remaining.slice(arrayStart));
+    let depth = 0;
+    let inStr = false;
+    let esc = false;
+    let endPos = -1;
+    for (let i = 0; i < fixed.length; i++) {
+      const ch = fixed[i];
+      if (esc) { esc = false; continue; }
+      if (inStr) {
+        if (ch === "\\") esc = true;
+        else if (ch === '"') inStr = false;
+        continue;
+      }
+      if (ch === '"') inStr = true;
+      else if (ch === "[") depth++;
+      else if (ch === "]") {
+        depth--;
+        if (depth === 0) { endPos = i; break; }
+      }
+    }
+
+    if (endPos === -1) break;
+
+    sections.push({ title, json: fixed.slice(0, endPos + 1) });
+
+    // Advance past this array in the original text.
+    // The fixed text may be longer than the original due to escape expansion,
+    // so we find the next section by looking for the next header/array.
+    // Find the corresponding ] in the original text by scanning for the
+    // Nth ] that closes the top-level array.
+    let origDepth = 0;
+    let origInStr = false;
+    let origEsc = false;
+    let origEnd = -1;
+    for (let i = arrayStart; i < remaining.length; i++) {
+      const ch = remaining[i];
+      if (origEsc) { origEsc = false; continue; }
+      if (origInStr) {
+        if (ch === "\\") origEsc = true;
+        else if (ch === '"') origInStr = false;
+        continue;
+      }
+      if (ch === '"') origInStr = true;
+      else if (ch === "[") origDepth++;
+      else if (ch === "]") {
+        origDepth--;
+        if (origDepth === 0) { origEnd = i; break; }
+      }
+    }
+
+    if (origEnd === -1) break;
+    remaining = remaining.slice(origEnd + 1);
+  }
+
+  return sections;
 }
 
 export function parseContext(raw: string): ClassifiedEntry[] {
-  const stripped = stripPreamble(raw);
-  const fixed = fixNonStandardJson(stripped);
-  const data: RawEntry[] = JSON.parse(fixed);
+  const sections = extractSections(raw);
 
-  if (!Array.isArray(data)) {
-    throw new Error("Expected a JSON array of context entries");
+  if (sections.length === 0) {
+    throw new Error("No JSON arrays found in input");
   }
 
-  return data.map((entry, i) => classifyEntry(entry, i));
+  const allEntries: ClassifiedEntry[] = [];
+  let globalIndex = 0;
+  const multiSection = sections.length > 1;
+
+  for (const section of sections) {
+    const data: RawEntry[] = JSON.parse(section.json);
+
+    if (!Array.isArray(data)) {
+      throw new Error("Expected a JSON array of context entries");
+    }
+
+    if (multiSection) {
+      allEntries.push({
+        index: globalIndex++,
+        role: "system",
+        kind: "section-header",
+        content: section.title ?? "Context",
+      });
+    }
+
+    for (const entry of data) {
+      allEntries.push(classifyEntry(entry, globalIndex++));
+    }
+  }
+
+  return allEntries;
 }

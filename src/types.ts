@@ -22,7 +22,8 @@ export type EntryKind =
   | "user-session-start"
   | "assistant"
   | "assistant-tool-call"
-  | "tool-response";
+  | "tool-response"
+  | "section-header";
 
 export interface ClassifiedEntry {
   index: number;

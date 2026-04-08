@@ -161,6 +161,25 @@ body {
   margin-bottom: 12px;
 }
 
+/* ── Section Header ──────────────────────────────────── */
+
+.section-header {
+  border-top: 2px solid #1a1a1a;
+  margin-top: 24px;
+  padding: 10px 0;
+}
+
+.section-header:first-child {
+  margin-top: 0;
+}
+
+.section-header-text {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  letter-spacing: 0.02em;
+}
+
 /* ── Entry Card ──────────────────────────────────────── */
 
 .entry {

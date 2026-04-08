@@ -27,6 +27,14 @@ export default function ContextEntry({ entry }: Props) {
 
   const [open, setOpen] = useState(false);
 
+  if (entry.kind === "section-header") {
+    return (
+      <div className="section-header">
+        <span className="section-header-text">{entry.content}</span>
+      </div>
+    );
+  }
+
   return (
     <div className={`entry ${kindClass}`}>
       <div
