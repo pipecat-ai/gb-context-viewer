@@ -186,6 +186,9 @@ body {
 .entry--user-summary {
   border-left-color: #78909c;
 }
+.entry--user-session-start {
+  border-left-color: #5c6bc0;
+}
 .entry--assistant {
   border-left-color: #43a047;
 }
@@ -250,6 +253,9 @@ body {
 }
 .role-badge--user-summary {
   background: #78909c;
+}
+.role-badge--user-session-start {
+  background: #5c6bc0;
 }
 .role-badge--assistant,
 .role-badge--assistant-tool-call {

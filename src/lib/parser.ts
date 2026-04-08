@@ -60,6 +60,7 @@ function fixNonStandardJson(raw: string): string {
 const EVENT_RE = /<event\s+name="?([^\s">]+)"?([^>]*)>([\s\S]*?)<\/event>/;
 const TASK_ID_RE = /task_id="?([^\s">]+)"?/;
 const SUMMARY_RE = /<session_history_summary>([\s\S]*?)<\/session_history_summary>/;
+const SESSION_START_RE = /<start_of_session>([\s\S]*?)<\/start_of_session>/;
 const SECTOR_RE = /(?:in|around) sector (\d+)/;
 
 function extractEventSummary(eventName: string, body: string): string | undefined {
@@ -129,11 +130,32 @@ function classifyEntry(entry: RawEntry, index: number): ClassifiedEntry {
     };
   }
 
+  const sessionMatch = content.match(SESSION_START_RE);
+  if (sessionMatch) {
+    return {
+      index,
+      role: entry.role,
+      kind: "user-session-start",
+      content,
+      eventSummary: sessionMatch[1].trim() || undefined,
+    };
+  }
+
   return { index, role: entry.role, kind: "user-text" as EntryKind, content };
 }
 
+function stripPreamble(raw: string): string {
+  // Strip any non-JSON text before the opening bracket
+  const start = raw.indexOf("[");
+  if (start === -1) return raw;
+  const end = raw.lastIndexOf("]");
+  if (end === -1) return raw;
+  return raw.slice(start, end + 1);
+}
+
 export function parseContext(raw: string): ClassifiedEntry[] {
-  const fixed = fixNonStandardJson(raw);
+  const stripped = stripPreamble(raw);
+  const fixed = fixNonStandardJson(stripped);
   const data: RawEntry[] = JSON.parse(fixed);
 
   if (!Array.isArray(data)) {
