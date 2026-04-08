@@ -10,7 +10,7 @@ const KIND_LABELS: Record<string, string> = {
   "user-text": "USER",
   "user-event": "EVENT",
   "user-summary": "SUMMARY",
-  "user-session-start": "SESSION",
+  "user-tag": "TAG",
   assistant: "ASSISTANT",
   "assistant-tool-call": "ASSISTANT",
   "tool-response": "TOOL",

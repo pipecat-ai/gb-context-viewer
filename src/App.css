@@ -205,7 +205,7 @@ body {
 .entry--user-summary {
   border-left-color: #78909c;
 }
-.entry--user-session-start {
+.entry--user-tag {
   border-left-color: #5c6bc0;
 }
 .entry--assistant {
@@ -273,7 +273,7 @@ body {
 .role-badge--user-summary {
   background: #78909c;
 }
-.role-badge--user-session-start {
+.role-badge--user-tag {
   background: #5c6bc0;
 }
 .role-badge--assistant,

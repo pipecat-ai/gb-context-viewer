@@ -60,7 +60,8 @@ function fixNonStandardJson(raw: string): string {
 const EVENT_RE = /<event\s+name="?([^\s">]+)"?([^>]*)>([\s\S]*?)<\/event>/;
 const TASK_ID_RE = /task_id="?([^\s">]+)"?/;
 const SUMMARY_RE = /<session_history_summary>([\s\S]*?)<\/session_history_summary>/;
-const SESSION_START_RE = /<start_of_session>([\s\S]*?)<\/start_of_session>/;
+// Matches user messages that are entirely a single XML-like tag (e.g. <idle_check>...</idle_check>)
+const USER_TAG_RE = /^\s*<([a-z_]+)>([\s\S]*?)<\/\1>\s*$/;
 const SECTOR_RE = /(?:in|around) sector (\d+)/;
 
 function extractEventSummary(eventName: string, body: string): string | undefined {
@@ -130,14 +131,15 @@ function classifyEntry(entry: RawEntry, index: number): ClassifiedEntry {
     };
   }
 
-  const sessionMatch = content.match(SESSION_START_RE);
-  if (sessionMatch) {
+  const tagMatch = content.match(USER_TAG_RE);
+  if (tagMatch) {
     return {
       index,
       role: entry.role,
-      kind: "user-session-start",
+      kind: "user-tag",
       content,
-      eventSummary: sessionMatch[1].trim() || undefined,
+      eventName: tagMatch[1],
+      eventSummary: tagMatch[2].trim() || undefined,
     };
   }
 

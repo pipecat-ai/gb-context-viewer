@@ -19,7 +19,7 @@ export type EntryKind =
   | "user-text"
   | "user-event"
   | "user-summary"
-  | "user-session-start"
+  | "user-tag"
   | "assistant"
   | "assistant-tool-call"
   | "tool-response"

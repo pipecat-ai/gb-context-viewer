@@ -37,11 +37,12 @@ describe("parseContext", () => {
         }
       });
 
-      it("classifies session starts correctly", () => {
+      it("classifies system tags correctly (no tags misclassified as user-text)", () => {
         entries = entries ?? parseContext(raw);
         const userTexts = entries.filter((e) => e.kind === "user-text");
         for (const entry of userTexts) {
-          expect(entry.content).not.toMatch(/<start_of_session>/);
+          // Content that is entirely a single XML tag should be user-tag, not user-text
+          expect(entry.content).not.toMatch(/^\s*<([a-z_]+)>[\s\S]*<\/\1>\s*$/);
         }
       });
     });
